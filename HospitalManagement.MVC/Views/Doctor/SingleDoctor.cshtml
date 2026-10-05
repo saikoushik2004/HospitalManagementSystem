@@ -1,0 +1,42 @@
+﻿@model HospitalManagement.Library.Models.Doctor
+
+<h2>Doctor Details</h2>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Doctor Number</th>
+        <td>@Model.DoctorNumber</td>
+
+    </tr>
+
+    <tr>
+        <th>Full Name</th>
+        <td>@Model.FullName</td>
+    </tr>
+
+    <tr>
+        <th>Specialization</th>
+        <td>@Model.Specialization</td>
+    </tr>
+
+    <tr>
+        <th>PhoneNumber</th>
+        <td>@Model.PhoneNumber</td>
+    </tr>
+
+    <tr>
+        <th>ConsultationFee</th>
+        <td>@Model.ConsultationFee</td>
+    </tr>
+
+    <tr>
+        <th>Created Date</th>
+        <td>@Model.CreatedDate</td>
+    </tr>
+
+</table>
+
+<a asp-action="TotalDoctors" class="btn btn-primary">
+    Back to List
+</a>

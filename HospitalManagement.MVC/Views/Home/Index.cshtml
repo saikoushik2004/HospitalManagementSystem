@@ -1,0 +1,418 @@
+﻿@{
+    ViewData["Title"] = "Home";
+
+    var fullname = Context.Session.GetString("FullName");
+}
+
+<div class="hospital-home">
+
+    <!-- Hero Section -->
+
+    <section class="hero-section">
+
+        <!-- Background Overlay -->
+        <div class="hero-overlay"></div>
+
+        <!-- Logout Button -->
+        <div class="logout-container">
+
+            <a asp-controller="Login"
+               asp-action="Logout"
+               class="btn btn-danger">
+                Logout
+            </a>
+
+        </div>
+
+        <!-- Search Box -->
+        <div class="home-search-container">
+
+            <div class="home-search position-relative">
+
+                <div class="input-group">
+
+                    <input type="text"
+                           id="patientSearch"
+                           class="form-control"
+                           placeholder="Search patients, doctors or appointments..."
+                           autocomplete="off" />
+
+                    <button type="button"
+                            id="searchButton"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-search"></i>
+                        Search
+                    </button>
+
+                </div>
+
+                <div id="searchResults"
+                     class="search-results">
+                </div>
+
+            </div>
+
+        </div>                                                          
+
+        <!-- Hero Content -->
+
+        <div class="container hero-content">
+
+            <div class="row">
+
+                <div class="col-lg-7">
+
+                    <p class="welcome-text">
+                        WELCOME TO
+                    </p>
+
+                    <h1>
+                        KN Hospitals
+                    </h1>
+
+                    <p class="welcome-user">
+                        Welcome, @fullname
+                    </p>
+
+                    <p class="hero-description">
+                        Only Hospital Which People Trust More
+                    </p>
+                    
+                    
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Patients, Doctors and Appointments -->
+
+    <section class="statistics-section">
+
+        <div class="container">
+
+            <div class="row g-4 justify-content-center">
+
+                <!-- Patients -->
+
+                <div class="col-md-4">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon patient-icon">
+                            👥
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Patients
+                            </h2>
+
+                            <p>
+                                Manage Patient Records
+                            </p>
+
+                            <a asp-controller="Patient"
+                               asp-action="TotalPatients">
+
+                                View Patients →
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Doctors -->
+
+                <div class="col-md-4">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon doctor-icon">
+                            🩺
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Doctors
+                            </h2>
+
+                            <p>
+                                Manage Doctors
+                            </p>
+
+                            <a asp-controller="Doctor"
+                               asp-action="TotalDoctors">
+
+                                View Doctors →
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Appointments -->
+
+                <div class="col-md-4">
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon appointment-icon">
+                            📅
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Appointments
+                            </h2>
+
+                            <p>
+                                Manage Appointments
+                            </p>
+
+                            <a asp-controller="Appointment"
+                               asp-action="TotalAppointments">
+
+                                View Appointments →
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- About Hospital Management -->
+
+    <section class="management-section">
+
+        <div class="container">
+
+            <div class="text-center">
+
+                <h2 class="section-title">
+                    Hospital Management System
+                </h2>
+
+                <p class="section-subtitle">
+                    Manage all hospital activities from one place
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer Information -->
+
+    <section class="home-footer">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <strong>
+                        🏥 Hospital Management System
+                    </strong>
+
+                </div>
+
+                <div class="col-md-6 text-md-end">
+
+                    Care • Compassion • Commitment
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+@section Scripts {
+
+    <script>
+
+        const searchBox = document.getElementById("patientSearch");
+        const searchResults = document.getElementById("searchResults");
+        const searchButton = document.getElementById("searchButton");
+
+
+        // Search while typing
+        searchBox.addEventListener("input", async function() {
+
+            const searchTerm = searchBox.value.trim();
+
+            // If nothing is typed
+            if (searchTerm === "") {
+
+                searchResults.innerHTML = "";
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    `/Search/Search?searchTerm=${encodeURIComponent(searchTerm)}`
+                );
+
+
+                if (!response.ok) {
+
+                    searchResults.innerHTML = "";
+                    return;
+                }
+
+
+                const results = await response.json();
+
+                searchResults.innerHTML = "";
+
+
+                // No results
+                if (results.length === 0) {
+
+                    searchResults.innerHTML = `
+                                <div class="search-result-item">
+                                    No results found
+                                </div>
+                            `;
+
+                    return;
+                }
+
+
+                // Display results
+                results.forEach(result => {
+
+                    const resultItem =
+                        document.createElement("div");
+
+                    resultItem.className =
+                        "search-result-item";
+
+
+                    resultItem.innerHTML = `
+
+                                <div class="search-result-name">
+
+                                    ${result.type === "Patient" ? "👤" :
+                            result.type === "Doctor" ? "🩺" : "📅"}
+
+                                    ${result.name}
+
+                                </div>
+
+                                <div class="search-result-number">
+
+                                    ${result.type}
+
+                                    ${result.number
+                            ? " • " + result.number
+                            : ""}
+
+                                </div>
+
+                            `;
+
+
+                    // When result is clicked
+                    resultItem.addEventListener("click", function() {
+
+                        if (result.type === "Patient") {
+
+                            window.location.href =
+                                `/Patient/TotalPatients?searchTerm=${encodeURIComponent(result.name)}`;
+
+                        }
+                        else if (result.type === "Doctor") {
+
+                            window.location.href =
+                                `/Doctor/TotalDoctors?searchTerm=${encodeURIComponent(result.name)}`;
+
+                        }
+                        else if (result.type === "Appointment") {
+
+                            window.location.href =
+                                `/Appointment/TotalAppointments?searchTerm=${encodeURIComponent(result.number)}`;
+
+                        }
+
+                    });
+
+
+                    searchResults.appendChild(resultItem);
+
+                });
+
+            }
+            catch (error) {
+
+                console.error("Search error:", error);
+
+            }
+
+        });
+
+
+        // Search button
+        searchButton.addEventListener("click", function() {
+
+            const searchTerm =
+                searchBox.value.trim();
+
+
+            if (searchTerm === "") {
+
+                return;
+            }
+
+
+            // Get the first result from the dropdown
+            const firstResult =
+                searchResults.querySelector(".search-result-item");
+
+
+            if (firstResult) {
+
+                firstResult.click();
+
+            }
+
+        });
+
+    </script>
+
+}

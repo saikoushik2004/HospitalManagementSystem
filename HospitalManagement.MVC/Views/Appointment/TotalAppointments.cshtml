@@ -1,0 +1,56 @@
+﻿@model IEnumerable<HospitalManagement.Library.Models.Appointment>
+
+<h2>Total Appointments</h2>
+
+
+<a asp-action="Create" class="btn btn-primary">Add new Appointment</a>
+
+<table class="table table-bordered table-striped">
+
+    <thead>
+        <tr>
+            <th>AppointmentNumber</th>
+            <th>PatientId</th>
+            <th>DoctorId</th>
+            <th>AppointmentDate</th>
+            <th>Status</th>
+            <th>Action Button</th>
+        </tr>
+
+
+    </thead>
+
+    <tbody>
+        @foreach(var appointment in Model)
+        {
+            <tr>
+                <td>@appointment.AppointmentNumber</td>
+                <td>@appointment.PatientId</td>
+                <td>@appointment.DoctorId</td>
+                <td>@appointment.AppointmentDate</td>
+                <td>@appointment.Status</td>
+                <td>
+                    <a asp-action="Edit"
+                    asp-route-id ="@appointment.AppointmentId"
+                    class="btn btn-warning btn-sm">
+                Edit
+                </a>
+
+                <form asp-action="Delete"
+                asp-route-id ="@appointment.AppointmentId"
+                method="post"
+                style="display:inline;">
+            
+            <button type="submit"
+                class="btn btn-danger btn-sm"
+                onclick="return confirm('Are you sure you want to delete this Appointment?');">
+            Delete
+            </button>
+
+            </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
